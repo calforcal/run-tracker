@@ -1,4 +1,4 @@
-export interface Athlete {
+export interface AthleteResponse {
   id: number;
   username: string;
   resource_state: number;
@@ -22,6 +22,37 @@ export interface Athlete {
   athlete_type: number;
   date_preference: string;
   measurement_preference: string;
+  clubs: null | unknown[];
+  ftp: null | number;
+  weight: number;
+  bikes: null | unknown[];
+  shoes: null | unknown[];
+}
+
+export interface Athlete {
+  id: number;
+  username: string;
+  resourceState: number;
+  firstName: string;
+  lastName: string;
+  city: string;
+  state: string;
+  country: string;
+  sex: 'M' | 'F';
+  premium: boolean;
+  createdAt: string;
+  updatedAt: string;
+  badgeTypeID: number;
+  profileMedium: string;
+  profile: string;
+  friend: null | boolean;
+  follower: null | boolean;
+  followerCount: number;
+  friendCount: number;
+  mutualFriendCount: number;
+  athleteType: number;
+  datePreference: string;
+  measurementPreference: string;
   clubs: null | unknown[];
   ftp: null | number;
   weight: number;
