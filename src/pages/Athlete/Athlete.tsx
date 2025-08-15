@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import type { Athlete } from "../../types/athlete";
-import { getAthlete } from "../../apis/athlete";
+import { getAthlete, getAthleteActivities } from "../../apis/athlete";
 
 export default function Athlete() {
   const [athlete, setAthlete] = useState<Athlete | null>();
@@ -25,6 +25,7 @@ export default function Athlete() {
 
   useEffect(() => {
     void handleGetAthlete();
+    void getAthleteActivities();
   }, [handleGetAthlete]);
 
   if (isError) {

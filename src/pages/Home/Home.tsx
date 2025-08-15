@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 const url =
-  "http://www.strava.com/oauth/authorize?client_id=161522&response_type=code&redirect_uri=http://localhost:5173/auth/callback&approval_prompt=auto&scope=read";
+  "http://www.strava.com/oauth/authorize?client_id=161522&response_type=code&redirect_uri=http://localhost:5173/auth/callback&approval_prompt=auto&scope=read,activity:read";
 
 export default function Home() {
   return (

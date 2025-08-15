@@ -50,3 +50,19 @@ export const getAthlete = async () => {
     console.error(err);
   }
 };
+
+export const getAthleteActivities = async () => {
+  try {
+    const response = await fetch("http://localhost:8000/api/athlete/activities", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const data = await response.json()
+    console.log("GOT DATA", data)
+  } catch (err) {
+    console.error(err)
+  }
+}
