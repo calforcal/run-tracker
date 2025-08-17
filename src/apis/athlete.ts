@@ -1,11 +1,12 @@
 import Cookies from "js-cookie";
-import type { AthleteResponse, Athlete } from "../types/athlete";
+import type { AthleteResponse, Athlete, ActivityResponse, Activity, Activities } from "../types/athlete";
 
 const accessToken = Cookies.get("accessToken")
+const backendURL = "http://localhost:8000"
 
 export const getAthlete = async () => {
   try {
-    const response = await fetch("http://localhost:8000/api/athlete", {
+    const response = await fetch(`${backendURL}/api/athlete`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
@@ -51,18 +52,80 @@ export const getAthlete = async () => {
   }
 };
 
-export const getAthleteActivities = async () => {
+export const getAthleteActivities = async (): Promise<Activities | undefined> => {
   try {
-    const response = await fetch("http://localhost:8000/api/athlete/activities", {
+    const response = await fetch(`${backendURL}/api/athlete/activities`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
     });
 
-    const data = await response.json()
-    console.log("GOT DATA", data)
+    const data: ActivityResponse[] = await response.json();
+    
+    const activities: Activity[] = data.map((activity) => ({
+      resourceState: activity.resource_state,
+      athlete: {
+        id: activity.athlete.id,
+        resourceState: activity.athlete.resource_state,
+      },
+      name: activity.name,
+      distance: activity.distance,
+      movingTime: activity.moving_time,
+      elapsedTime: activity.elapsed_time,
+      totalElevationGain: activity.total_elevation_gain,
+      type: activity.type,
+      sportType: activity.sport_type,
+      workoutType: activity.workout_type,
+      id: activity.id,
+      externalId: activity.external_id,
+      uploadId: activity.upload_id,
+      startDate: activity.start_date,
+      startDateLocal: activity.start_date_local,
+      timezone: activity.timezone,
+      utcOffset: activity.utc_offset,
+      startLatlng: activity.start_latlng,
+      endLatlng: activity.end_latlng,
+      locationCity: activity.location_city,
+      locationState: activity.location_state,
+      locationCountry: activity.location_country,
+      achievementCount: activity.achievement_count,
+      kudosCount: activity.kudos_count,
+      commentCount: activity.comment_count,
+      athleteCount: activity.athlete_count,
+      photoCount: activity.photo_count,
+      map: {
+        id: activity.map.id,
+        summaryPolyline: activity.map.summary_polyline,
+        resourceState: activity.map.resource_state,
+      },
+      trainer: activity.trainer,
+      commute: activity.commute,
+      manual: activity.manual,
+      private: activity.private,
+      flagged: activity.flagged,
+      gearId: activity.gear_id,
+      fromAcceptedTag: activity.from_accepted_tag,
+      averageSpeed: activity.average_speed,
+      maxSpeed: activity.max_speed,
+      averageCadence: activity.average_cadence,
+      averageWatts: activity.average_watts,
+      weightedAverageWatts: activity.weighted_average_watts,
+      kilojoules: activity.kilojoules,
+      deviceWatts: activity.device_watts,
+      hasHeartrate: activity.has_heartrate,
+      averageHeartrate: activity.average_heartrate,
+      maxHeartrate: activity.max_heartrate,
+      maxWatts: activity.max_watts,
+      prCount: activity.pr_count,
+      totalPhotoCount: activity.total_photo_count,
+      hasKudoed: activity.has_kudoed,
+      sufferScore: activity.suffer_score,
+    }));
+
+    return { activities };
   } catch (err) {
-    console.error(err)
+    console.error(err);
+    return undefined;
   }
-}
+};
