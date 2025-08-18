@@ -1,14 +1,26 @@
+import { Link } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
-import type { Activities, Athlete } from "../../types/athlete";
+import {
+  mockActivities,
+  type Activity,
+  type Athlete,
+} from "../../types/athlete";
 import { getAthlete, getAthleteActivities } from "../../apis/athlete";
+import { ActivityRow } from "../../components/ActivityRow/ActivityRow";
+
+import styles from "./Athlete.module.css";
 
 export default function Athlete() {
   const [athlete, setAthlete] = useState<Athlete | null>();
   const [loadingAthlete, setLoadingAthlete] = useState(false);
   const [isAthleteError, setIsAthleteError] = useState(false);
-  const [activities, setActivities] = useState<Activities | null>();
+  const [activities, setActivities] = useState<Activity[] | null>(
+    mockActivities
+  );
   const [loadingActivities, setLoadingActivities] = useState(false);
   const [isErrorActivities, setIsErrorActivities] = useState(false);
+
+  console.log(mockActivities);
 
   const handleGetAthlete = useCallback(async () => {
     setLoadingAthlete(true);
@@ -32,7 +44,7 @@ export default function Athlete() {
     const activitiesData = await getAthleteActivities();
     if (activitiesData) {
       setLoadingActivities(false);
-      setActivities(activitiesData);
+      setActivities(activitiesData.activities);
       return;
     }
 
@@ -51,11 +63,21 @@ export default function Athlete() {
   if (loadingAthlete || loadingActivities) {
     return <div>loading....</div>;
   }
+
   if (athlete && activities) {
     return (
       <>
-        <div>This is the username: {athlete.username}</div>
-        <div>This is activity one: {activities.activities[0].name}</div>
+        <h2 className={styles.athleteTitle}>{athlete.username}'s Activities</h2>
+        {activities?.map((activity, index) => (
+          <div key={index}>
+            <Link
+              to={`/activity/${activity.id}`}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <ActivityRow activity={activity} />
+            </Link>
+          </div>
+        ))}
       </>
     );
   }
