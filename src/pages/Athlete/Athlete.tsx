@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import {
   mockActivities,
@@ -6,9 +5,9 @@ import {
   type Athlete,
 } from "../../types/athlete";
 import { getAthlete, getAthleteActivities } from "../../apis/athlete";
-import { ActivityRow } from "../../components/ActivityRow/ActivityRow";
 
 import styles from "./Athlete.module.css";
+import { ActivityList } from "../../components/ActivityList/ActivityList";
 
 export default function Athlete() {
   const [athlete, setAthlete] = useState<Athlete | null>();
@@ -68,16 +67,7 @@ export default function Athlete() {
     return (
       <>
         <h2 className={styles.athleteTitle}>{athlete.username}'s Activities</h2>
-        {activities?.map((activity, index) => (
-          <div key={index}>
-            <Link
-              to={`/activity/${activity.id}`}
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <ActivityRow activity={activity} />
-            </Link>
-          </div>
-        ))}
+        <ActivityList activities={activities} />
       </>
     );
   }
