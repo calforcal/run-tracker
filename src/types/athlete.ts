@@ -371,3 +371,109 @@ export const mockActivities: Activity[] = [
     sufferScore: 72,
   },
 ];
+
+interface PolylineMapResponse extends ActivityMap {
+  polyline: string
+}
+
+export type DetailedActivityResponse = {
+  id: number;
+  external_id: string;
+  upload_id: number;
+  name: string;
+  distance: number;
+  moving_time: number;
+  elapsed_time: number;
+  total_elevation_gain: number;
+  elev_high: number;
+  elev_low: number;
+  type: string; // deprecated
+  sport_type: string;
+  start_date: string; // ISO datetime
+  start_date_local: string;
+  timezone: string;
+  start_latlng: number[];
+  end_latlng: number[];
+  achievement_count: number;
+  kudos_count: number;
+  comment_count: number;
+  athlete_count: number;
+  photo_count: number;
+  total_photo_count: number;
+  map: PolylineMapResponse;
+  trainer: boolean;
+  commute: boolean;
+  manual: boolean;
+  private: boolean;
+  flagged: boolean;
+  workout_type: number;
+  upload_id_str: string;
+  average_speed: number;
+  max_speed: number;
+  has_kudoed: boolean;
+  hide_from_home: boolean;
+  gear_id: string;
+  kilojoules: number;
+  average_watts: number;
+  device_watts: boolean;
+  max_watts: number;
+  weighted_average_watts: number;
+  description: string;
+  calories: number;
+  device_name: string;
+  embed_token: string;
+};
+
+// Client-side normalized version (camelCase, TS style)
+export type DetailedActivity = {
+  id: number;
+  externalId: string;
+  uploadId: number;
+  name: string;
+  distance: number;
+  movingTime: number;
+  elapsedTime: number;
+  totalElevationGain: number;
+  elevHigh: number;
+  elevLow: number;
+  type: string; // deprecated
+  sportType: string;
+  startDate: string;
+  startDateLocal: string;
+  timezone: string;
+  startLatlng: number[];
+  endLatlng: number[];
+  achievementCount: number;
+  kudosCount: number;
+  commentCount: number;
+  athleteCount: number;
+  photoCount: number;
+  totalPhotoCount: number;
+  map: {
+    id: string;
+    summaryPolyline: string | null;
+    resourceState: number;
+    polyline: string;
+  };
+  trainer: boolean;
+  commute: boolean;
+  manual: boolean;
+  private: boolean;
+  flagged: boolean;
+  workoutType: number;
+  uploadIdStr: string;
+  averageSpeed: number;
+  maxSpeed: number;
+  hasKudoed: boolean;
+  hideFromHome: boolean;
+  gearId: string;
+  kilojoules: number;
+  averageWatts: number;
+  deviceWatts: boolean;
+  maxWatts: number;
+  weightedAverageWatts: number;
+  description: string;
+  calories: number;
+  deviceName: string;
+  embedToken: string;
+};
