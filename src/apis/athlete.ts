@@ -132,7 +132,7 @@ export const getAthleteActivities = async (): Promise<Activities | undefined> =>
 
 export const getActivityByID = async (activityID: string): Promise<DetailedActivity | undefined> => {
   try {
-    const response = await fetch(`${backendURL}/api/activity${activityID}`, {
+    const response = await fetch(`${backendURL}/api/athlete/activities/${activityID}`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
