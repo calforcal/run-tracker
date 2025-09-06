@@ -43,7 +43,8 @@ export const getAthlete = async () => {
       ftp: data.ftp,
       weight: data.weight,
       bikes: data.bikes,
-      shoes: data.shoes
+      shoes: data.shoes,
+      isSpotifyConnected: data.is_spotify_connected,
     }
 
     return athlete

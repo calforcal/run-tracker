@@ -8,8 +8,10 @@ import { getAthlete, getAthleteActivities } from "../../apis/athlete";
 
 import styles from "./Athlete.module.css";
 import { ActivityList } from "../../components/ActivityList/ActivityList";
+import { useNavigate } from "react-router-dom";
 
 export default function Athlete() {
+  const navigate = useNavigate();
   const [athlete, setAthlete] = useState<Athlete | null>();
   const [loadingAthlete, setLoadingAthlete] = useState(false);
   const [isAthleteError, setIsAthleteError] = useState(false);
@@ -27,6 +29,9 @@ export default function Athlete() {
     const response = await getAthlete();
     console.log(response);
     if (response) {
+      if (!response.isSpotifyConnected) {
+        navigate("/spotify/login");
+      }
       setLoadingAthlete(false);
       setAthlete(response);
       return;
@@ -65,10 +70,10 @@ export default function Athlete() {
 
   if (athlete && activities) {
     return (
-      <>
+      <div className={styles.athleteContainer}>
         <h2 className={styles.athleteTitle}>{athlete.username}'s Activities</h2>
         <ActivityList activities={activities} />
-      </>
+      </div>
     );
   }
 }

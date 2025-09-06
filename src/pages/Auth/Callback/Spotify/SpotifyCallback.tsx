@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { authorizeStravaUser } from "../../../apis/auth";
+import { authorizeSpotifyUser } from "../../../../apis/auth";
 
-export default function Callback() {
+export default function SpotifyCallback() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
@@ -13,7 +13,7 @@ export default function Callback() {
     async (code: string) => {
       setLoading(true);
       // Add functionality to stop from sending twice
-      const successfullyAuthorized = await authorizeStravaUser(code);
+      const successfullyAuthorized = await authorizeSpotifyUser(code);
       if (successfullyAuthorized) {
         setLoading(false);
         navigate("/athlete");

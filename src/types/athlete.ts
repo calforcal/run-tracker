@@ -27,6 +27,7 @@ export interface AthleteResponse {
   weight: number;
   bikes: null | unknown[];
   shoes: null | unknown[];
+  is_spotify_connected: boolean;
 }
 
 export interface Athlete {
@@ -58,6 +59,7 @@ export interface Athlete {
   weight: number;
   bikes: null | unknown[];
   shoes: null | unknown[];
+  isSpotifyConnected: boolean;
 }
 
 export interface ActivityAthlete {

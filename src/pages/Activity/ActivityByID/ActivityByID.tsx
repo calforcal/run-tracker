@@ -55,14 +55,13 @@ export default function ActivityByID() {
           <h2>{activity.name}</h2>
           <p>Distance: {activity.distance}m</p>
           <p>Type: {activity.sportType}</p>
-          <p>Polyline: {activity.map.polyline}</p>
         </div>
       )}
 
       {path.length > 0 && (
         <MapContainer
           center={path[0] as LatLngExpression}
-          zoom={13}
+          zoom={14}
           style={{ height: "400px", width: "100%" }}
         >
           <TileLayer

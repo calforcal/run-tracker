@@ -1,3 +1,8 @@
+.athleteContainer {
+  flex: display;
+  flex-direction: row;
+}
+
 .athleteTitle {
   flex: display;
 }
