@@ -1,37 +1,50 @@
-import { useCallback, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { authorizeStravaUser } from "../../../apis/auth";
+import { authorizeStravaUser, login } from "../../../apis/auth";
 
 export default function Callback() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const exchangedRef = useRef(false);
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const code = searchParams.get("code");
-
-  const handleUserAuth = useCallback(
-    async (code: string) => {
-      setLoading(true);
-      // Add functionality to stop from sending twice
-      const successfullyAuthorized = await authorizeStravaUser(code);
-      if (successfullyAuthorized) {
-        setLoading(false);
-        navigate("/athlete");
-      }
-
-      setLoading(false);
-      setIsError(true);
-    },
-    [navigate]
-  );
+  const state = searchParams.get("state") || "register";
 
   useEffect(() => {
-    if (!code) {
+    // Guard against double execution
+    if (!code || exchangedRef.current) {
       return;
     }
 
-    void handleUserAuth(code);
-  }, [code, handleUserAuth]);
+    exchangedRef.current = true;
+
+    const handleUserAuth = async () => {
+      setLoading(true);
+
+      try {
+        let token = "";
+        if (state === "login") {
+          token = await login(code);
+        } else if (state === "register") {
+          token = await authorizeStravaUser(code);
+        }
+
+        if (token) {
+          navigate("/athlete");
+        } else {
+          setIsError(true);
+        }
+      } catch (error) {
+        console.error("Auth error:", error);
+        setIsError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void handleUserAuth();
+  }, [code, state, navigate]);
 
   if (isError) {
     return <div>God damn error</div>;

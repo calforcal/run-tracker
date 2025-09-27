@@ -1,8 +1,20 @@
 .athleteContainer {
   flex: display;
-  flex-direction: row;
+  flex-direction: column;
 }
 
 .athleteTitle {
   flex: display;
+}
+
+.activitiesSongContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 48px;
+  height: 100%;
+  padding: 48px;
+}
+
+.songRow {
+  font-size: 18px;
 }
