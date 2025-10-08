@@ -1,10 +1,11 @@
 .athleteContainer {
-  flex: display;
+  display: flex;
   flex-direction: column;
+  font-family: "Open-Sans", sans-serif;
 }
 
 .athleteTitle {
-  flex: display;
+  display: flex;
 }
 
 .activitiesSongContainer {
@@ -15,6 +16,71 @@
   padding: 48px;
 }
 
+.songListContainer {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  height: 75vh;
+  border: 2px solid rgb(204, 51, 153);
+  border-radius: 16px;
+  background-color: rgba(204, 51, 153, 0.1);
+  overflow: scroll; /* Keeps content within rounded borders */
+  padding: 8px;
+}
+
 .songRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 64px;
   font-size: 18px;
+  padding: 8px;
+  border-radius: 12px;
+  background-color: rgba(204, 51, 153, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.songRow:not(:last-child) {
+  border-bottom: 1px solid rgba(204, 51, 153, 0.3);
+  margin-bottom: 4px;
+}
+
+.songRow:hover {
+  cursor: pointer;
+  background-color: rgba(178, 27, 128, 0.25);
+  transform: translateY(-4px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.songRow:active {
+  background-color: rgba(178, 27, 128, 0.4);
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.albumImage {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  margin-right: 16px;
+}
+
+.songTextContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 0 8px;
+}
+
+.titleText {
+  flex: 1;
+  font-weight: 800;
+}
+
+.artistText {
+  color: rgba(139, 128, 128, 0.9);
+  font-weight: 300;
 }

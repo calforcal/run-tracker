@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { Image } from "@mui/icons-material";
 import {
   mockActivities,
   type Activity,
@@ -23,7 +24,7 @@ export default function Athlete() {
   const [songs, setSongs] = useState<ListeningHistoryItem[] | undefined>();
   const [loadingSongs, setLoadingSongs] = useState(false);
 
-  console.log(mockActivities);
+  // console.log(mockActivities);
 
   const handleGetAthlete = useCallback(async () => {
     setLoadingAthlete(true);
@@ -56,15 +57,15 @@ export default function Athlete() {
   const handleGetAthleteActivities = useCallback(async () => {
     setLoadingActivities(true);
 
-    const activitiesData = await getAthleteActivities();
-    if (activitiesData) {
-      setLoadingActivities(false);
-      setActivities(activitiesData.activities);
-      return;
-    }
-
+    // const activitiesData = await getAthleteActivities();
+    // if (activitiesData) {
     setLoadingActivities(false);
-    setIsErrorActivities(true);
+    setActivities(mockActivities);
+    // return;
+    // }
+
+    // setLoadingActivities(false);
+    // setIsErrorActivities(true);
   }, []);
 
   useEffect(() => {
@@ -86,11 +87,19 @@ export default function Athlete() {
         <h2 className={styles.athleteTitle}>{athlete.username}'s Activities</h2>
         <div className={styles.activitiesSongContainer}>
           <ActivityList activities={activities} />
-          <div>
+          <div className={styles.songListContainer}>
             {songs.map((song) => {
               return (
                 <div className={styles.songRow}>
-                  {song.track.name} by {song.track.artists[0].name}
+                  <img
+                    src={song.track.album.images[0].url}
+                    alt="album cover"
+                    className={styles.albumImage}
+                  />
+                  <div className={styles.songTextContainer}>
+                    <span className={styles.titleText}>{song.track.name}</span>
+                    <span className={styles.artistText}>{song.track.artists[0].name}</span>
+                  </div>
                 </div>
               );
             })}
