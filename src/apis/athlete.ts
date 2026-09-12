@@ -1,11 +1,11 @@
 import Cookies from "js-cookie";
 import type { AthleteResponse, Athlete, ActivityResponse, Activity, Activities, DetailedActivity, DetailedActivityResponse } from "../types/athlete";
 
-const accessToken = Cookies.get("accessToken")
 const backendURL = "http://localhost:8000"
 
 export const getAthlete = async () => {
   try {
+    const accessToken = Cookies.get("accessToken")
     const response = await fetch(`${backendURL}/api/athlete`, {
       headers: {
         "Content-Type": "application/json",
@@ -55,6 +55,7 @@ export const getAthlete = async () => {
 
 export const getAthleteActivities = async (): Promise<Activities | undefined> => {
   try {
+    const accessToken = Cookies.get("accessToken")
     const response = await fetch(`${backendURL}/api/athlete/activities`, {
       headers: {
         "Content-Type": "application/json",
@@ -133,6 +134,7 @@ export const getAthleteActivities = async (): Promise<Activities | undefined> =>
 
 export const getActivityByID = async (activityID: string): Promise<DetailedActivity | undefined> => {
   try {
+    const accessToken = Cookies.get("accessToken")
     const response = await fetch(`${backendURL}/api/athlete/activities/${activityID}`, {
       headers: {
         "Content-Type": "application/json",

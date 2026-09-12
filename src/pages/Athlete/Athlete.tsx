@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Image } from "@mui/icons-material";
 import {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- kept for the commented-out mock fallback below
   mockActivities,
   type Activity,
   type Athlete,
@@ -16,9 +17,10 @@ export default function Athlete() {
   const [athlete, setAthlete] = useState<Athlete | null>();
   const [loadingAthlete, setLoadingAthlete] = useState(false);
   const [isAthleteError, setIsAthleteError] = useState(false);
-  const [activities, setActivities] = useState<Activity[] | null>(
-    mockActivities
-  );
+  const [activities, setActivities] = useState<Activity[] | null>(null);
+  // const [activities, setActivities] = useState<Activity[] | null>(
+  //   mockActivities
+  // );
   const [loadingActivities, setLoadingActivities] = useState(false);
   const [isErrorActivities, setIsErrorActivities] = useState(false);
   const [songs, setSongs] = useState<ListeningHistoryItem[] | undefined>();
@@ -57,15 +59,19 @@ export default function Athlete() {
   const handleGetAthleteActivities = useCallback(async () => {
     setLoadingActivities(true);
 
-    // const activitiesData = await getAthleteActivities();
-    // if (activitiesData) {
-    setLoadingActivities(false);
-    setActivities(mockActivities);
-    // return;
-    // }
+    const activitiesData = await getAthleteActivities();
+    if (activitiesData) {
+      setLoadingActivities(false);
+      setActivities(activitiesData.activities);
+      return;
+    }
 
+    setLoadingActivities(false);
+    setIsErrorActivities(true);
+
+    // Mocked version, kept for local UI work without hitting the API:
     // setLoadingActivities(false);
-    // setIsErrorActivities(true);
+    // setActivities(mockActivities);
   }, []);
 
   useEffect(() => {
@@ -90,15 +96,15 @@ export default function Athlete() {
           <div className={styles.songListContainer}>
             {songs.map((song) => {
               return (
-                <div className={styles.songRow}>
+                <div className={styles.songRow} key={song.song.spotifyId + song.playedAt}>
                   <img
-                    src={song.track.album.images[0].url}
+                    src={song.song.imageUrl}
                     alt="album cover"
                     className={styles.albumImage}
                   />
                   <div className={styles.songTextContainer}>
-                    <span className={styles.titleText}>{song.track.name}</span>
-                    <span className={styles.artistText}>{song.track.artists[0].name}</span>
+                    <span className={styles.titleText}>{song.song.title}</span>
+                    <span className={styles.artistText}>{song.song.artist}</span>
                   </div>
                 </div>
               );
