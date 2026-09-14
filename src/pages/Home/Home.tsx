@@ -11,7 +11,7 @@ const registerUrl =
 export default function Home() {
   return (
     <div className={styles.homeContainer}>
-      <h1 className={styles.headline}>Sehnsucht</h1>
+      <h1 className={styles.headline}>Run Tracker</h1>
       <div className={styles.linksContainer}>
         <div className={styles.linkContainer}>
           <Link className={styles.link} to={url}>

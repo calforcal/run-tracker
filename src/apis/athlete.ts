@@ -1,8 +1,8 @@
 import Cookies from "js-cookie";
-import type { AthleteResponse, Athlete, ActivityResponse, Activity, Activities, DetailedActivity, DetailedActivityResponse } from "../types/athlete";
+import type { AthleteResponse, Athlete, ActivityResponse, Activity, Activities, DetailedActivity, DetailedActivityResponse, ActivityStream, ActivityStreamResponse } from "../types/athlete";
 import { handleUnauthorized } from "./session";
 
-const backendURL = "http://localhost:8000"
+const backendURL = "https://run-tracker-api-saqxt.ondigitalocean.app"
 
 export const getAthlete = async () => {
   try {
@@ -247,3 +247,41 @@ export function mapDetailedActivity(
     })),
   };
 }
+
+export const getActivityStream = async (
+  activityID: string
+): Promise<ActivityStream[] | undefined> => {
+  try {
+    const accessToken = Cookies.get("accessToken");
+    const response = await fetch(
+      `${backendURL}/api/athlete/activities/${activityID}/stream`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    if (response.status === 401) {
+      handleUnauthorized();
+      return undefined;
+    }
+    if (!response.ok) {
+      throw new Error(`Failed to fetch activity stream: ${response.status}`);
+    }
+
+    const data: ActivityStreamResponse[] = await response.json();
+
+    return data.map((stream) => ({
+      type: stream.type,
+      data: stream.data,
+      seriesType: stream.series_type,
+      originalSize: stream.original_size,
+      resolution: stream.resolution,
+    }));
+  } catch (err) {
+    console.error(err);
+    return undefined;
+  }
+};

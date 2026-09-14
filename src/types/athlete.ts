@@ -486,3 +486,19 @@ export type DetailedActivity = {
   embedToken: string;
   songs: ListeningHistoryItem[];
 };
+
+export interface ActivityStreamResponse {
+  type: string;
+  data: unknown[];
+  series_type: string;
+  original_size: number;
+  resolution: string;
+}
+
+export interface ActivityStream {
+  type: string;
+  data: unknown[];
+  seriesType: string;
+  originalSize: number;
+  resolution: string;
+}

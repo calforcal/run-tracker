@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 import type { CallbackResponse } from "../types/auth";
 
-const backendUrl = "http://localhost:8000"
+const backendUrl = "https://run-tracker-api-saqxt.ondigitalocean.app"
 
 export const login = async (code: string) => {
   try {

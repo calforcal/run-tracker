@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getActivityByID } from "../../../apis/athlete";
-import type { DetailedActivity } from "../../../types/athlete";
+import { getActivityByID, getActivityStream } from "../../../apis/athlete";
+import type { ActivityStream, DetailedActivity } from "../../../types/athlete";
 import { calculateElapsedTime } from "../../../utils/DateTime";
 
 import { MapContainer, TileLayer, Polyline } from "react-leaflet";
@@ -13,6 +13,33 @@ import Button from "@mui/material/Button";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import styles from "./ActivityByID.module.css";
 
+interface TrackPoint {
+  offsetSec: number;
+  position: LatLngTuple;
+}
+
+// Strava's time/latlng streams are index-aligned: streams[i].data[n] for
+// "time" (seconds elapsed since the activity started) and streams[i].data[n]
+// for "latlng" describe the same GPS fix. Zipping them gives us a way to
+// look up "where was the athlete N seconds into the activity."
+function buildTrackPoints(streams: ActivityStream[]): TrackPoint[] {
+  const timeStream = streams.find((s) => s.type === "time");
+  const latlngStream = streams.find((s) => s.type === "latlng");
+
+  if (!timeStream || !latlngStream) {
+    return [];
+  }
+
+  const times = timeStream.data as number[];
+  const positions = latlngStream.data as LatLngTuple[];
+
+  if (times.length === 0 || times.length !== positions.length) {
+    return [];
+  }
+
+  return times.map((offsetSec, i) => ({ offsetSec, position: positions[i] }));
+}
+
 export default function ActivityByID() {
   const { activityID } = useParams();
 
@@ -20,6 +47,10 @@ export default function ActivityByID() {
   const [loadingActivity, setLoadingActivity] = useState(false);
   const [activityError, setActivityError] = useState(false);
   const [path, setPath] = useState<LatLngTuple[]>([]);
+  const [trackPoints, setTrackPoints] = useState<TrackPoint[]>([]);
+  const [hoveredSongIndex, setHoveredSongIndex] = useState<number | null>(
+    null
+  );
 
   const handleGetActivityByID = useCallback(async () => {
     if (activityID) {
@@ -35,6 +66,14 @@ export default function ActivityByID() {
         setActivityError(true);
       }
       setLoadingActivity(false);
+
+      // Best-effort: streams may not exist for every activity (e.g. manual
+      // or indoor entries). A missing/failed fetch just means song hover
+      // highlighting has nothing to show - it shouldn't fail the page.
+      const streams = await getActivityStream(activityID);
+      if (streams) {
+        setTrackPoints(buildTrackPoints(streams));
+      }
     }
   }, [activityID]);
 
@@ -43,6 +82,40 @@ export default function ActivityByID() {
       void handleGetActivityByID();
     }
   }, [handleGetActivityByID, activityID]);
+
+  const highlightSegment = useMemo<LatLngTuple[]>(() => {
+    if (hoveredSongIndex === null || !activity || trackPoints.length === 0) {
+      return [];
+    }
+
+    const item = activity.songs[hoveredSongIndex];
+    if (!item) {
+      return [];
+    }
+
+    const activityStartMs = new Date(activity.startDate).getTime();
+    const startOffsetSec =
+      (new Date(item.playedAt).getTime() - activityStartMs) / 1000;
+    let endOffsetSec = startOffsetSec + item.song.durationMs / 1000;
+
+    // A song's played_at only marks when it started - if the listener
+    // skipped to the next track early, this song's real end is whenever
+    // that next one started, not its full nominal duration. Without this,
+    // a skipped song's window overruns into the next song's, and their
+    // highlighted segments overlap on the map.
+    const nextItem = activity.songs[hoveredSongIndex + 1];
+    if (nextItem) {
+      const nextStartOffsetSec =
+        (new Date(nextItem.playedAt).getTime() - activityStartMs) / 1000;
+      endOffsetSec = Math.min(endOffsetSec, nextStartOffsetSec);
+    }
+
+    return trackPoints
+      .filter(
+        (p) => p.offsetSec >= startOffsetSec && p.offsetSec <= endOffsetSec
+      )
+      .map((p) => p.position);
+  }, [hoveredSongIndex, activity, trackPoints]);
 
   const backButton = (
     <Button
@@ -150,10 +223,16 @@ export default function ActivityByID() {
               <h3 className={styles.songsTitle}>Listening History</h3>
               {activity.songs.length > 0 ? (
                 <div className={styles.songsList}>
-                  {activity.songs.map((item) => (
+                  {activity.songs.map((item, index) => (
                     <div
                       className={styles.songRow}
                       key={item.song.spotifyId + item.playedAt}
+                      onMouseEnter={() => setHoveredSongIndex(index)}
+                      onMouseLeave={() =>
+                        setHoveredSongIndex((current) =>
+                          current === index ? null : current
+                        )
+                      }
                     >
                       <img
                         src={item.song.imageUrl}
@@ -188,6 +267,13 @@ export default function ActivityByID() {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
               <Polyline positions={path} color="#cc3399" />
+              {highlightSegment.length > 1 && (
+                <Polyline
+                  positions={highlightSegment}
+                  color="#ffd700"
+                  weight={6}
+                />
+              )}
             </MapContainer>
           ) : (
             <div className={styles.mapPlaceholder}>No route data</div>

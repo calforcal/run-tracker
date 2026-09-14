@@ -4,7 +4,7 @@ import camelcaseKeys from 'camelcase-keys';
 import { handleUnauthorized } from "./session";
 
 
-const backendURL = "http://localhost:8000"
+const backendURL = "https://run-tracker-api-saqxt.ondigitalocean.app"
 
 export const getListeningHistory = async () => {
   try {
