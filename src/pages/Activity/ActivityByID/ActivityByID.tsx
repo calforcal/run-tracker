@@ -5,7 +5,7 @@ import type { DetailedActivity } from "../../../types/athlete";
 import { calculateElapsedTime } from "../../../utils/DateTime";
 
 import { MapContainer, TileLayer, Polyline } from "react-leaflet";
-import type { LatLngExpression } from "leaflet";
+import type { LatLngTuple } from "leaflet";
 
 import "leaflet/dist/leaflet.css";
 import polyline from "@mapbox/polyline";
@@ -19,7 +19,7 @@ export default function ActivityByID() {
   const [activity, setActivity] = useState<DetailedActivity | undefined>();
   const [loadingActivity, setLoadingActivity] = useState(false);
   const [activityError, setActivityError] = useState(false);
-  const [path, setPath] = useState<LatLngExpression[]>([]);
+  const [path, setPath] = useState<LatLngTuple[]>([]);
 
   const handleGetActivityByID = useCallback(async () => {
     if (activityID) {
@@ -148,7 +148,7 @@ export default function ActivityByID() {
 
         <div className={styles.mapWrapper}>
           {path.length > 0 ? (
-            <MapContainer center={path[0] as LatLngExpression} zoom={14}>
+            <MapContainer bounds={path} boundsOptions={{ padding: [32, 32] }}>
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
