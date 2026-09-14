@@ -1,3 +1,8 @@
+import type {
+  ListeningHistoryItem,
+  ListeningHistoryItemSnake,
+} from "./tracks";
+
 export interface AthleteResponse {
   id: number;
   username: string;
@@ -424,6 +429,7 @@ export type DetailedActivityResponse = {
   calories: number;
   device_name: string;
   embed_token: string;
+  songs: ListeningHistoryItemSnake[];
 };
 
 // Client-side normalized version (camelCase, TS style)
@@ -478,4 +484,5 @@ export type DetailedActivity = {
   calories: number;
   deviceName: string;
   embedToken: string;
+  songs: ListeningHistoryItem[];
 };

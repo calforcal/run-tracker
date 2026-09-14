@@ -1,5 +1,6 @@
 import Cookies from "js-cookie";
 import type { AthleteResponse, Athlete, ActivityResponse, Activity, Activities, DetailedActivity, DetailedActivityResponse } from "../types/athlete";
+import { handleUnauthorized } from "./session";
 
 const backendURL = "http://localhost:8000"
 
@@ -12,6 +13,14 @@ export const getAthlete = async () => {
         Authorization: `Bearer ${accessToken}`,
       },
     });
+
+    if (response.status === 401) {
+      handleUnauthorized();
+      return undefined;
+    }
+    if (!response.ok) {
+      throw new Error(`Failed to fetch athlete: ${response.status}`);
+    }
 
     const data: AthleteResponse = await response.json();
 
@@ -62,6 +71,14 @@ export const getAthleteActivities = async (): Promise<Activities | undefined> =>
         Authorization: `Bearer ${accessToken}`,
       },
     });
+
+    if (response.status === 401) {
+      handleUnauthorized();
+      return undefined;
+    }
+    if (!response.ok) {
+      throw new Error(`Failed to fetch activities: ${response.status}`);
+    }
 
     const data: ActivityResponse[] = await response.json();
     
@@ -142,6 +159,14 @@ export const getActivityByID = async (activityID: string): Promise<DetailedActiv
       },
     });
 
+    if (response.status === 401) {
+      handleUnauthorized();
+      return undefined;
+    }
+    if (!response.ok) {
+      throw new Error(`Failed to fetch activity: ${response.status}`);
+    }
+
     const data: DetailedActivityResponse = await response.json()
 
     const activity: DetailedActivity = mapDetailedActivity(data)
@@ -208,5 +233,17 @@ export function mapDetailedActivity(
     calories: response.calories,
     deviceName: response.device_name,
     embedToken: response.embed_token,
+    songs: (response.songs ?? []).map((item) => ({
+      song: {
+        title: item.song.title,
+        artist: item.song.artist,
+        albumTitle: item.song.album_title,
+        durationMs: item.song.duration_ms,
+        imageUrl: item.song.image_url,
+        uri: item.song.uri,
+        spotifyId: item.song.spotify_id,
+      },
+      playedAt: item.played_at,
+    })),
   };
 }

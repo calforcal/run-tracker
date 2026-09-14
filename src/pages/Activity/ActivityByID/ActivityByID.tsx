@@ -144,6 +144,40 @@ export default function ActivityByID() {
               </div>
             </div>
           )}
+
+          {activity && (
+            <div className={styles.songsCard}>
+              <h3 className={styles.songsTitle}>Listening History</h3>
+              {activity.songs.length > 0 ? (
+                <div className={styles.songsList}>
+                  {activity.songs.map((item) => (
+                    <div
+                      className={styles.songRow}
+                      key={item.song.spotifyId + item.playedAt}
+                    >
+                      <img
+                        src={item.song.imageUrl}
+                        alt="album cover"
+                        className={styles.albumImage}
+                      />
+                      <div className={styles.songTextContainer}>
+                        <span className={styles.songTitle}>
+                          {item.song.title}
+                        </span>
+                        <span className={styles.songArtist}>
+                          {item.song.artist}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className={styles.songsEmpty}>
+                  No listening activity for this activity
+                </p>
+              )}
+            </div>
+          )}
         </div>
 
         <div className={styles.mapWrapper}>
