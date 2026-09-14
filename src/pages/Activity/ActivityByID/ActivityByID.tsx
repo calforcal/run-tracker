@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getActivityByID } from "../../../apis/athlete";
 import type { DetailedActivity } from "../../../types/athlete";
 
@@ -8,6 +8,8 @@ import type { LatLngExpression } from "leaflet";
 
 import "leaflet/dist/leaflet.css";
 import polyline from "@mapbox/polyline";
+import Button from "@mui/material/Button";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 export default function ActivityByID() {
   const { activityID } = useParams();
@@ -40,15 +42,37 @@ export default function ActivityByID() {
     }
   }, [handleGetActivityByID, activityID]);
 
+  const backButton = (
+    <Button
+      component={Link}
+      to="/athlete"
+      startIcon={<ArrowBackIcon />}
+      sx={{ mb: 2 }}
+    >
+      Back to Activities
+    </Button>
+  );
+
   if (activityError) {
-    return <div>God damn error</div>;
+    return (
+      <div>
+        {backButton}
+        <div>God damn error</div>
+      </div>
+    );
   }
   if (loadingActivity) {
-    return <div>loading....</div>;
+    return (
+      <div>
+        {backButton}
+        <div>loading....</div>
+      </div>
+    );
   }
 
   return (
     <div>
+      {backButton}
       <h1>Activity {activityID}</h1>
       {activity && (
         <div>
