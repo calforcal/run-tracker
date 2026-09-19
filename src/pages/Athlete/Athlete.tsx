@@ -92,8 +92,12 @@ export default function Athlete() {
       <div className={styles.athleteContainer}>
         <h2 className={styles.athleteTitle}>{athlete.username}'s Activities</h2>
         <div className={styles.activitiesSongContainer}>
-          <ActivityList activities={activities} />
+          <div className={styles.activityListBox}>
+            <h3 className={styles.sectionTitle}>Activities</h3>
+            <ActivityList activities={activities} />
+          </div>
           <div className={styles.songListContainer}>
+            <h3 className={styles.sectionTitle}>Listening History</h3>
             {songs.map((song) => {
               return (
                 <div className={styles.songRow} key={song.song.spotifyId + song.playedAt}>
