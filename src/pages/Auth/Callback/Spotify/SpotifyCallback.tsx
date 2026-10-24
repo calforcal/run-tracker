@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { authorizeSpotifyUser } from "../../../../apis/auth";
+import { LoadingSpinner } from "../../../../components/LoadingSpinner";
+import { ErrorMessage } from "../../../../components/ErrorMessage";
 
 export default function SpotifyCallback() {
   const navigate = useNavigate();
@@ -34,10 +36,10 @@ export default function SpotifyCallback() {
   }, [code, handleUserAuth]);
 
   if (isError) {
-    return <div>God damn error</div>;
+    return <ErrorMessage />;
   }
   if (loading) {
-    return <div>loading....</div>;
+    return <LoadingSpinner />;
   }
   return <div>Token received see ya later</div>;
 }

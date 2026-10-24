@@ -12,6 +12,8 @@ import polyline from "@mapbox/polyline";
 import Button from "@mui/material/Button";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import styles from "./ActivityByID.module.css";
+import { LoadingSpinner } from "../../../components/LoadingSpinner";
+import { ErrorMessage } from "../../../components/ErrorMessage";
 
 interface TrackPoint {
   offsetSec: number;
@@ -137,29 +139,11 @@ export default function ActivityByID() {
   );
 
   if (activityError) {
-    return (
-      <div className={styles.container}>
-        <div className={`${styles.contentRow} ${styles.centered}`}>
-          <div className={styles.detailsColumn}>
-            {backButton}
-            <div className={styles.detailsCard}>God damn error</div>
-          </div>
-        </div>
-      </div>
-    );
+    return <ErrorMessage />;
   }
 
   if (loadingActivity) {
-    return (
-      <div className={styles.container}>
-        <div className={`${styles.contentRow} ${styles.centered}`}>
-          <div className={styles.detailsColumn}>
-            {backButton}
-            <div className={styles.detailsCard}>loading....</div>
-          </div>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   return (

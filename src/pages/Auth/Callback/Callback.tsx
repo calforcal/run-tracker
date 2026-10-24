@@ -1,6 +1,8 @@
 import { useRef, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { authorizeStravaUser, login } from "../../../apis/auth";
+import { LoadingSpinner } from "../../../components/LoadingSpinner";
+import { ErrorMessage } from "../../../components/ErrorMessage";
 
 export default function Callback() {
   const navigate = useNavigate();
@@ -47,10 +49,10 @@ export default function Callback() {
   }, [code, state, navigate]);
 
   if (isError) {
-    return <div>God damn error</div>;
+    return <ErrorMessage />;
   }
   if (loading) {
-    return <div>loading....</div>;
+    return <LoadingSpinner />;
   }
   return <div>Token received see ya later</div>;
 }

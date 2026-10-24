@@ -14,12 +14,6 @@
   box-sizing: border-box;
 }
 
-.contentRow.centered {
-  align-items: center;
-  justify-content: center;
-  min-height: 60vh;
-}
-
 .detailsColumn {
   display: flex;
   flex-direction: column;

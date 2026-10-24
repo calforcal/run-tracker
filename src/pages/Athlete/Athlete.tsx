@@ -10,6 +10,8 @@ import { getAthlete, getAthleteActivities } from "../../apis/athlete";
 
 import styles from "./Athlete.module.css";
 import { ActivityList } from "../../components/ActivityList/ActivityList";
+import { LoadingSpinner } from "../../components/LoadingSpinner";
+import { ErrorMessage } from "../../components/ErrorMessage";
 import type { ListeningHistoryItem } from "../../types/tracks";
 import { getListeningHistory } from "../../apis/listening-history";
 
@@ -81,10 +83,10 @@ export default function Athlete() {
   }, [handleGetAthlete, handleGetAthleteActivities, handleGetListeningHistory]);
 
   if (isAthleteError || isErrorActivities) {
-    return <div>God damn error</div>;
+    return <ErrorMessage />;
   }
   if (loadingAthlete || loadingActivities || loadingSongs) {
-    return <div>loading....</div>;
+    return <LoadingSpinner />;
   }
 
   if (athlete && activities && songs) {
@@ -92,27 +94,31 @@ export default function Athlete() {
       <div className={styles.athleteContainer}>
         <h2 className={styles.athleteTitle}>{athlete.username}'s Activities</h2>
         <div className={styles.activitiesSongContainer}>
-          <div className={styles.activityListBox}>
+          <div className={styles.activityColumn}>
             <h3 className={styles.sectionTitle}>Activities</h3>
-            <ActivityList activities={activities} />
+            <div className={styles.activityListBox}>
+              <ActivityList activities={activities} />
+            </div>
           </div>
-          <div className={styles.songListContainer}>
+          <div className={styles.songColumn}>
             <h3 className={styles.sectionTitle}>Listening History</h3>
-            {songs.map((song) => {
-              return (
-                <div className={styles.songRow} key={song.song.spotifyId + song.playedAt}>
-                  <img
-                    src={song.song.imageUrl}
-                    alt="album cover"
-                    className={styles.albumImage}
-                  />
-                  <div className={styles.songTextContainer}>
-                    <span className={styles.titleText}>{song.song.title}</span>
-                    <span className={styles.artistText}>{song.song.artist}</span>
+            <div className={styles.songListContainer}>
+              {songs.map((song) => {
+                return (
+                  <div className={styles.songRow} key={song.song.spotifyId + song.playedAt}>
+                    <img
+                      src={song.song.imageUrl}
+                      alt="album cover"
+                      className={styles.albumImage}
+                    />
+                    <div className={styles.songTextContainer}>
+                      <span className={styles.titleText}>{song.song.title}</span>
+                      <span className={styles.artistText}>{song.song.artist}</span>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
